@@ -193,6 +193,9 @@ def merge_const(module_name):
 def parse_args_and_merge_const():
     parser = argparse.ArgumentParser()
     parser.add_argument('--conf', default='', type=str)
+    parser.add_argument('--chkpt', default='', type=str)
     args = parser.parse_args()
     if args.conf != '':
         merge_const(args.conf)
+    if args.chkpt != '':
+        setattr(const, 'CHKPT', args.chkpt)

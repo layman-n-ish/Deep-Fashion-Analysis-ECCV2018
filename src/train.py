@@ -24,16 +24,25 @@ if __name__ == '__main__':
     val_step = len(val_dataloader)
 
     net = const.USE_NET() # the whole network
-    net = net.to(const.device)
 
     learning_rate = const.LEARNING_RATE
     optimizer = torch.optim.Adam(net.parameters(), lr=learning_rate)
 
     writer = SummaryWriter(const.TRAIN_DIR)
 
+    if const.CHKPT != None:
+        checkpoint = torch.load(const.CHKPT)
+        net.load_state_dict(checkpoint['model_state_dict'])
+        optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
+        epoch = checkpoint['epoch']
+        loss = checkpoint['loss']
+    else
+        epoch = 0
+
+    net = net.to(const.device)
     total_step = len(train_dataloader)
     step = 0
-    for epoch in range(const.NUM_EPOCH):
+    while (epoch < const.NUM_EPOCH):
         net.train()
         for i, sample in enumerate(train_dataloader):
             step += 1
@@ -66,7 +75,11 @@ if __name__ == '__main__':
             if (i + 1) % 10000 == 0:
                 print('Saving Model....')
                 net.set_buffer('step', step)
-                torch.save(net.state_dict(), 'models/' + const.MODEL_NAME)
+                model_dict = {'epoch': epoch, \
+                              'model_state_dict': net.state_dict(), \
+                              'optim_state_dict': optimizer.state_dict(), \
+                              'loss': loss}
+                torch.save(model_dict, 'models/' + const.MODEL_NAME)
                 print('OK.')
                 if const.VAL_WHILE_TRAIN:
                     print('Now Evaluate..')
@@ -102,6 +115,8 @@ if __name__ == '__main__':
                         print('metrics/dist_all', ret['lm_dist'])
                         writer.add_scalar('metrics/dist_all', ret['lm_dist'], step)
                     net.train()
+        
+        epoch += 1
         # learning rate decay
         learning_rate *= const.LEARNING_RATE_DECAY
         optimizer = torch.optim.Adam(net.parameters(), lr=learning_rate)

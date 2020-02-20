@@ -1,11 +1,7 @@
 import time
 import torch
-import socket as _socket
-
-_hostname = str(_socket.gethostname())
 
 name = time.strftime('%m-%d %H:%M:%S', time.localtime())
-
 
 USE_NET = 'VGG16'
 
@@ -22,10 +18,7 @@ VGG16_ACT_FUNC_IN_POSE = 0
 
 MODEL_NAME = 'vgg16.pkl'
 
-if 'dlcs302-2' == _hostname:
-    base_path = '/home/hzy/datasets/DeepFashion/Category and Attribute Prediction Benchmark/'
-else:
-    base_path = '/media/laymanish/New Volume/Tuzo_Work/Category and Attribute Prediction Benchmark/'
+base_path = '/content/Category and Attribute Prediction Benchmark/'
 
 NUM_EPOCH = 20
 LEARNING_RATE = 0.0001
