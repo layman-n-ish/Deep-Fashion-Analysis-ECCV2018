@@ -23,7 +23,7 @@ if __name__ == '__main__':
     val_dataloader = torch.utils.data.DataLoader(val_dataset, batch_size=const.VAL_BATCH_SIZE, shuffle=False, num_workers=4)
     val_step = len(val_dataloader)
 
-    net = const.USE_NET()
+    net = const.USE_NET() # the whole network
     net = net.to(const.device)
 
     learning_rate = const.LEARNING_RATE

@@ -10,7 +10,7 @@ class LandmarkBranchUpsample(nn.Module):
 
     def __init__(self, in_channel=256):
         super(LandmarkBranchUpsample, self).__init__()
-        self.conv1 = nn.Conv2d(in_channel, 64, 1, 1, 0)
+        self.conv1 = nn.Conv2d(in_channel, 64, 1, 1, 0) # (in_channel, out_channel, kernel_size, stride, padding)
         self.conv2 = nn.Conv2d(64, 64, 3, 1, 1)
         self.conv3 = nn.Conv2d(64, 64, 3, 1, 1)
         self.conv4 = nn.Conv2d(64, 128, 3, 1, 1)
@@ -39,10 +39,10 @@ class LandmarkBranchUpsample(nn.Module):
         x = F.relu(self.conv9(x))
         x = self.conv10(x)
         # lm_pos_map = F.sigmoid(x)
-        lm_pos_map = x
+        lm_pos_map = x.cpu()
         batch_size, _, pred_h, pred_w = lm_pos_map.size()
         lm_pos_reshaped = lm_pos_map.reshape(batch_size, 8, -1)
-        # y是高上的坐标，x是宽上的坐标
+        # y is the coordinate in height, x is the coordinate in width
         lm_pos_y, lm_pos_x = np.unravel_index(torch.argmax(lm_pos_reshaped, dim=2), (pred_h, pred_w))
         lm_pos_output = np.stack([lm_pos_x / (pred_w - 1), lm_pos_y / (pred_h - 1)], axis=2)
 

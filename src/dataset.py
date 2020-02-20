@@ -2,6 +2,7 @@ import torch
 import torch.utils.data
 from src.const import base_path
 import numpy as np
+import numpy.matlib
 from torchvision import transforms
 import matplotlib.pyplot as plt
 from skimage import io, transform
@@ -25,7 +26,7 @@ def gaussian_map(image_w, image_h, center_x, center_y, R):
 
 def gen_landmark_map(image_w, image_h, landmark_in_pic, landmark_pos, R):
     ret = []
-    # 修改为不在图片里的时候才为0，其他都给出
+    # Change it to 0 when it is not in the picture, everything else is given
     for i in range(landmark_in_pic.shape[0]):
         if landmark_in_pic[i] == 0:
             ret.append(np.zeros((image_w, image_h)))
@@ -192,7 +193,7 @@ class DeepFashionCAPDataset(torch.utils.data.Dataset):
     def __init__(self, df, mode, base_path=base_path):
         self.df = df
         self.base_path = base_path
-        self.to_tensor = transforms.ToTensor()  # pytorch使用c x h x w的格式转换
+        self.to_tensor = transforms.ToTensor()  # pytorch uses c x h x w format conversion
         self.rescale = Rescale(256)
         self.rescale_largest_center = Rescale(224)
         self.rescale224square = Rescale((224, 224))

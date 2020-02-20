@@ -65,7 +65,7 @@ class WholeNetwork(ModuleWithAttr):
         attr_output = self.attr_fc1(feature)
         attr_output = F.relu(attr_output)
         attr_output = self.attr_fc2(attr_output)
-        attr_output = attr_output.reshape(attr_output.size()[0], 2, attr_output.size()[1] / 2)  # [batch_size, 2, 1000]
+        attr_output = attr_output.reshape(attr_output.size()[0], 2, int(attr_output.size()[1] / 2))  # [batch_size, 2, 1000]
         output = {}
         output['category_output'] = category_output
         output['attr_output'] = attr_output
@@ -84,7 +84,7 @@ class WholeNetwork(ModuleWithAttr):
         vis_mask = torch.cat([vis_sample] * lm_size * lm_size, dim=1).float()
         map_sample = sample['landmark_map%d' % lm_size].reshape(batch_size * 8, -1)
         map_output = output['lm_pos_map'].reshape(batch_size * 8, -1)
-        lm_pos_loss = torch.pow(vis_mask * (map_output - map_sample), 2).mean()
+        lm_pos_loss = torch.pow(vis_mask.cuda() * (map_output.cuda() - map_sample.cuda()), 2).mean()
 
         category_loss = self.category_loss_func(output['category_output'], sample['category_label'])
         attr_loss = self.attr_loss_func(output['attr_output'], sample['attr'])

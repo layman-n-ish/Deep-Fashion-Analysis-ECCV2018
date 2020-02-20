@@ -30,16 +30,16 @@ with open(base_path + 'Anno/list_landmarks.txt') as f:
         landmark_visibilities = [1] * 8
         landmark_in_pic = [1] * 8
         landmark_info = info[2:]
-        if clothes_type == 1:  # upper body
+        if clothes_type == 1:  # upper body - 6 fashion landmarks
             convert = {0: 0, 1: 1, 2: 2, 3: 3, 4: 6, 5: 7}
-        elif clothes_type == 2:
+        elif clothes_type == 2: # lower body - 4 fashion landmarks
             convert = {0: 4, 1: 5, 2: 6, 3: 7}
-        elif clothes_type == 3:
+        elif clothes_type == 3: # full body - 8 fashion landmarks
             convert = {0: 0, 1: 1, 2: 2, 3: 3, 4: 4, 5: 5, 6: 6, 7: 7}
         for i in convert:
+            vis = int(landmark_info[i * 3])
             x = int(landmark_info[i * 3 + 1])
             y = int(landmark_info[i * 3 + 2])
-            vis = int(landmark_info[i * 3])
             if vis == 2:
                 in_pic = 0
             elif vis == 1:
