@@ -36,7 +36,7 @@ if __name__ == '__main__':
         optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
         epoch = checkpoint['epoch']
         loss = checkpoint['loss']
-    else
+    else:
         epoch = 0
 
     net = net.to(const.device)
