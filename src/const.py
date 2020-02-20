@@ -4,6 +4,7 @@ import torch
 name = time.strftime('%m-%d %H:%M:%S', time.localtime())
 
 USE_NET = 'VGG16'
+CHKPT = ''
 
 TRAIN_DIR = 'runs/' + name
 VAL_DIR = 'runs/' + name

@@ -46,7 +46,7 @@ class WholeNetwork(ModuleWithAttr):
 
         conv_feature = vgg16_output['conv4_3']
 
-        attention_map = torch.cat([lm_merge_map, conv_feature], dim=1)
+        attention_map = torch.cat([lm_merge_map.to(const.device), conv_feature], dim=1)
         attention_map = self.attention_pred_net(attention_map)
 
         new_conv_feature = (1 + attention_map) * conv_feature

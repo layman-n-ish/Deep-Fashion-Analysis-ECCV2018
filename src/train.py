@@ -30,7 +30,7 @@ if __name__ == '__main__':
 
     writer = SummaryWriter(const.TRAIN_DIR)
 
-    if const.CHKPT != None:
+    if const.CHKPT != '':
         checkpoint = torch.load(const.CHKPT)
         net.load_state_dict(checkpoint['model_state_dict'])
         optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
