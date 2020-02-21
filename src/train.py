@@ -24,6 +24,7 @@ if __name__ == '__main__':
     val_step = len(val_dataloader)
 
     net = const.USE_NET() # the whole network
+    net = net.to(const.device)
 
     learning_rate = const.LEARNING_RATE
     optimizer = torch.optim.Adam(net.parameters(), lr=learning_rate)
@@ -33,13 +34,12 @@ if __name__ == '__main__':
     if const.CHKPT != '':
         checkpoint = torch.load(const.CHKPT)
         net.load_state_dict(checkpoint['model_state_dict'])
-        optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
-        epoch = checkpoint['epoch']
+        optimizer.load_state_dict(checkpoint['optim_state_dict'])
+        epoch = checkpoint['epoch'] + 1
         loss = checkpoint['loss']
     else:
         epoch = 0
 
-    net = net.to(const.device)
     total_step = len(train_dataloader)
     step = 0
     while (epoch < const.NUM_EPOCH):
@@ -51,9 +51,9 @@ if __name__ == '__main__':
             output = net(sample)
             loss = net.cal_loss(sample, output)
 
-            optimizer.zero_grad()
-            loss['all'].backward()
-            optimizer.step()
+            optimizer.zero_grad() # clears old gradients from the last step
+            loss['all'].backward() # computes the derivative of the loss w.r.t. the parameters (backprop)
+            optimizer.step() # causes the optimizer to take a step based on the gradients of the parameters
 
             if (i + 1) % 10 == 0:
                 if 'category_loss' in loss:

@@ -53,5 +53,5 @@ VAL_WHILE_TRAIN = True
 
 USE_CSV = 'info.csv'
 
-LM_TRAIN_USE = 'vis'
+LM_TRAIN_USE = 'vis' # 'in_pic'
 LM_EVAL_USE = 'vis'
