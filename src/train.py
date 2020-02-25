@@ -26,20 +26,22 @@ if __name__ == '__main__':
     net = const.USE_NET() # the whole network
     net = net.to(const.device)
 
+    if const.CHKPT != '':
+        checkpoint = torch.load(const.CHKPT)
+        learning_rate = checkpoint['learning_rate']
+    else:
+        learning_rate = const.LEARNING_RATE
     optimizer = torch.optim.Adam(net.parameters(), lr=learning_rate)
 
     writer = SummaryWriter(const.TRAIN_DIR)
 
     if const.CHKPT != '':
-        checkpoint = torch.load(const.CHKPT)
         net.load_state_dict(checkpoint['model_state_dict'])
         optimizer.load_state_dict(checkpoint['optim_state_dict'])
         epoch = checkpoint['epoch'] + 1
         loss = checkpoint['loss']
-        learning_rate = checkpoint['learning_rate']
     else:
         epoch = 0
-        learning_rate = const.LEARNING_RATE
 
     total_step = len(train_dataloader)
     step = 0
