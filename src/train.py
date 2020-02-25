@@ -26,7 +26,6 @@ if __name__ == '__main__':
     net = const.USE_NET() # the whole network
     net = net.to(const.device)
 
-    learning_rate = const.LEARNING_RATE
     optimizer = torch.optim.Adam(net.parameters(), lr=learning_rate)
 
     writer = SummaryWriter(const.TRAIN_DIR)
@@ -37,8 +36,10 @@ if __name__ == '__main__':
         optimizer.load_state_dict(checkpoint['optim_state_dict'])
         epoch = checkpoint['epoch'] + 1
         loss = checkpoint['loss']
+        learning_rate = checkpoint['learning_rate']
     else:
         epoch = 0
+        learning_rate = const.LEARNING_RATE
 
     total_step = len(train_dataloader)
     step = 0
@@ -72,14 +73,16 @@ if __name__ == '__main__':
                 writer.add_scalar('global/learning_rate', learning_rate, step)
                 print('Epoch [{}/{}], Step [{}/{}], Loss: {:.4f}'
                       .format(epoch + 1, const.NUM_EPOCH, i + 1, total_step, loss['all'].item()))
-            if (i + 1) % 10000 == 0:
+            if (i + 1) % 13072 == 0:
                 print('Saving Model....')
                 net.set_buffer('step', step)
                 model_dict = {'epoch': epoch, \
                               'model_state_dict': net.state_dict(), \
                               'optim_state_dict': optimizer.state_dict(), \
-                              'loss': loss}
-                torch.save(model_dict, 'models/' + const.MODEL_NAME)
+                              'loss': loss, \
+                              'learning_rate': learning_rate}
+
+                torch.save(model_dict, '/gdrive/My Drive/Deep-Fashion-Analysis/models/whole_' + str(epoch+1) + '.pkl')
                 print('OK.')
                 if const.VAL_WHILE_TRAIN:
                     print('Now Evaluate..')
