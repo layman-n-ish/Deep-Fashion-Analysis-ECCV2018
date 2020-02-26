@@ -7,7 +7,8 @@ from src import const
 from src.utils import parse_args_and_merge_const
 from tensorboardX import SummaryWriter
 import os
-
+import time
+import math
 
 if __name__ == '__main__':
     parse_args_and_merge_const()
@@ -17,11 +18,14 @@ if __name__ == '__main__':
     df = pd.read_csv(base_path + const.USE_CSV)
     train_df = df[df['evaluation_status'] == 'train']
     train_dataset = DeepFashionCAPDataset(train_df, mode=const.DATASET_PROC_METHOD_TRAIN)
-    train_dataloader = torch.utils.data.DataLoader(train_dataset, batch_size=const.BATCH_SIZE, shuffle=True, num_workers=4)
+    train_dataloader = torch.utils.data.DataLoader(train_dataset, batch_size=const.BATCH_SIZE, shuffle=True, num_workers=2)
     val_df = df[df['evaluation_status'] == 'test']
     val_dataset = DeepFashionCAPDataset(val_df, mode=const.DATASET_PROC_METHOD_VAL)
-    val_dataloader = torch.utils.data.DataLoader(val_dataset, batch_size=const.VAL_BATCH_SIZE, shuffle=False, num_workers=4)
+    val_dataloader = torch.utils.data.DataLoader(val_dataset, batch_size=const.VAL_BATCH_SIZE, shuffle=False, num_workers=2)
     val_step = len(val_dataloader)
+
+    N_TRAIN_SAMPLES = train_df.shape[0]
+    N_TEST_SAMPLES = val_df.shape[0]
 
     net = const.USE_NET() # the whole network
     net = net.to(const.device)
@@ -46,6 +50,7 @@ if __name__ == '__main__':
     total_step = len(train_dataloader)
     step = 0
     while (epoch < const.NUM_EPOCH):
+        start_time = time.time()
         net.train()
         for i, sample in enumerate(train_dataloader):
             step += 1
@@ -59,6 +64,9 @@ if __name__ == '__main__':
             optimizer.step() # causes the optimizer to take a step based on the gradients of the parameters
 
             if (i + 1) % 10 == 0:
+                end_time = time.time() - start_time
+                start_time = time.time()
+
                 if 'category_loss' in loss:
                     writer.add_scalar('loss/category_loss', loss['category_loss'], step)
                     writer.add_scalar('loss_weighted/category_loss', loss['weighted_category_loss'], step)
@@ -73,9 +81,9 @@ if __name__ == '__main__':
                     writer.add_scalar('loss_weighted/lm_pos_loss', loss['weighted_lm_pos_loss'], step)
                 writer.add_scalar('loss_weighted/all', loss['all'], step)
                 writer.add_scalar('global/learning_rate', learning_rate, step)
-                print('Epoch [{}/{}], Step [{}/{}], Loss: {:.4f}'
-                      .format(epoch + 1, const.NUM_EPOCH, i + 1, total_step, loss['all'].item()))
-            if (i + 1) % 13072 == 0:
+                print('Epoch [{}/{}], Step [{}/{}], Loss: {:.4f}, Time taken: {:.4f}'
+                      .format(epoch + 1, const.NUM_EPOCH, i + 1, total_step, loss['all'].item(), end_time))
+            if (i + 1) % math.ceil((N_TRAIN_SAMPLES/const.BATCH_SIZE)) == 0:
                 print('Saving Model....')
                 net.set_buffer('step', step)
                 model_dict = {'epoch': epoch, \

@@ -19,6 +19,7 @@ LM_SELECT_VGG_SIZE = 28
 LM_SELECT_VGG_CHANNEL = 512
 LM_BRANCH = _lm_branch
 EVALUATOR = _evaluator
+BATCH_SIZE = 32
 #################
 
 # Learning Scheme
