@@ -20,6 +20,7 @@ LM_SELECT_VGG_CHANNEL = 512
 LM_BRANCH = _lm_branch
 EVALUATOR = _evaluator
 BATCH_SIZE = 32
+N_WORKERS = 4
 #################
 
 # Learning Scheme
@@ -28,8 +29,8 @@ WEIGHT_LOSS_LM_POS = 10
 #################
 
 # auto
-TRAIN_DIR = '/gdrive/My Drive/Deep-Fashion-Analysis/runs/'
-VAL_DIR = '/gdrive/My Drive/Deep-Fashion-Analysis/runs/'
+TRAIN_DIR = '/home/ubuntu/deepfashion/Deep-Fashion-Analysis-ECCV2018/runs'
+VAL_DIR = '/home/ubuntu/deepfashion/Deep-Fashion-Analysis-ECCV2018/runs'
 
 MODEL_NAME = '%s.pkl' % _name
 #############

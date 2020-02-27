@@ -19,7 +19,7 @@ VGG16_ACT_FUNC_IN_POSE = 0
 
 MODEL_NAME = 'vgg16.pkl'
 
-base_path = '/content/Category and Attribute Prediction Benchmark/'
+base_path = '/home/ubuntu/deepfashion/Category and Attribute Prediction Benchmark'
 
 NUM_EPOCH = 20
 LEARNING_RATE = 0.0001

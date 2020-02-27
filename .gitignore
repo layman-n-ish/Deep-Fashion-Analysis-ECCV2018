@@ -106,3 +106,5 @@ models/
 runs/
 progress
 old_runs/
+old_progress
+requirements.txt

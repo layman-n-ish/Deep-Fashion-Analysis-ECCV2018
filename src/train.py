@@ -18,10 +18,10 @@ if __name__ == '__main__':
     df = pd.read_csv(base_path + const.USE_CSV)
     train_df = df[df['evaluation_status'] == 'train']
     train_dataset = DeepFashionCAPDataset(train_df, mode=const.DATASET_PROC_METHOD_TRAIN)
-    train_dataloader = torch.utils.data.DataLoader(train_dataset, batch_size=const.BATCH_SIZE, shuffle=True, num_workers=2)
+    train_dataloader = torch.utils.data.DataLoader(train_dataset, batch_size=const.BATCH_SIZE, shuffle=True, num_workers=const.N_WORKERS)
     val_df = df[df['evaluation_status'] == 'test']
     val_dataset = DeepFashionCAPDataset(val_df, mode=const.DATASET_PROC_METHOD_VAL)
-    val_dataloader = torch.utils.data.DataLoader(val_dataset, batch_size=const.VAL_BATCH_SIZE, shuffle=False, num_workers=2)
+    val_dataloader = torch.utils.data.DataLoader(val_dataset, batch_size=const.VAL_BATCH_SIZE, shuffle=False, num_workers=const.N_WORKERS)
     val_step = len(val_dataloader)
 
     N_TRAIN_SAMPLES = train_df.shape[0]
@@ -92,7 +92,7 @@ if __name__ == '__main__':
                               'loss': loss, \
                               'learning_rate': learning_rate}
 
-                torch.save(model_dict, '/gdrive/My Drive/Deep-Fashion-Analysis/models/whole_' + str(epoch+1) + '.pkl')
+                torch.save(model_dict, '/home/ubuntu/deepfashion/Deep-Fashion-Analysis-ECCV2018/models/whole_' + str(epoch+1) + '.pkl')
                 print('OK.')
                 if const.VAL_WHILE_TRAIN:
                     print('Now Evaluate..')
